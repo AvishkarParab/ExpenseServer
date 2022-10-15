@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(cookieParser())
 
 app.use("/",Routes);
-app.use("/useme",(req,res)=>{res.send("USEEEEE MEEE")});
+app.get("/useme",(req,res)=>{res.send("USEEEEE MEEE")});
 
 app.use(errorHandler);
 
