@@ -65,17 +65,98 @@ const getDetail = asyncHandler(async(req,res)=>{
 })
 
 //Delete Details of specific month
-const deletedetails = asyncHandler(async(req,res)=>{
-    if(!req.params.id){
+const deleteDetail = asyncHandler(async(req,res)=>{
+    if(!req.query.rec || !req.query.exp){
         res.status(400)
         throw new Error("Enter a Valid ID");
     }
-    let expenses = await Detail.findByIdAndRemove(req.params.id);
-    if(expenses){
-        res.status(200).json(expenses)
+    let record = await Detail.findById(req.query.rec);
+    let expFlag=false;
+    let removeIndex;
+    if(record){
+        record.expense.forEach((expense,index) => {
+            if(expense.id === req.query.exp){
+                expFlag=true;
+                removeIndex=index;
+            }
+        });
+
+        if(!expFlag)
+           { throw new Error("Expense not found")}
+
+        const upExp = record.expense.splice(removeIndex,1);
+
+        let updateRecord;
+        if(record.expense.length<=0){
+            updateRecord = await Detail.deleteOne(
+                {_id:req.query.rec}
+             )
+        }else{
+            updateRecord = await Detail.updateOne(
+                {_id:req.query.rec},
+                {expense:record.expense}
+            )
+        }   
+
+       if(updateRecord)
+        res.status(200).json("Expense deleted successfully")
+       else
+        throw new Error("Expense not deleted");
+            
     }else{
         res.status(400)
-        throw new Error("Expense Not Found");
+        throw new Error("Record Not Found");
+    }
+
+
+})
+
+//Delete Details of specific month
+const updateDetail = asyncHandler(async(req,res)=>{
+
+    if(!req.query.rec || !req.query.exp){
+        res.status(400)
+        throw new Error("Enter a Valid ID");
+    }
+
+    const {recId,date,day,time,etype,img,category,note,amount} = req.body;
+    if(!recId || !date|| !day|| !time|| !etype|| !img|| !category|| !amount){
+        res.status(400)
+        throw new Error("Incomplete Data, Please add details");
+    }
+
+    let record = await Detail.findById(req.query.rec);
+    let expFlag=false;
+    if(record){
+        record.expense.forEach((expense,index) => {
+            if(expense.id === req.query.exp){
+                expense.time=time
+                expense.etype=etype
+                expense.img=img
+                expense.note=note
+                expense.category=category
+                expense.amount=amount
+                expFlag=true;
+            }
+        });
+        // res.status(200).json(record.expense)
+        if(!expFlag)
+           { throw new Error("Expense not found")}
+
+        const updateRecord = await Detail.updateOne(
+                {_id:req.query.rec},
+                {expense:record.expense}
+            )
+        
+
+       if(updateRecord)
+        res.status(200).json("Expense Updated successfully")
+       else
+        throw new Error("Expense not updated");
+            
+    }else{
+        res.status(400)
+        throw new Error("Record Not Found");
     }
 
 
@@ -85,5 +166,6 @@ const deletedetails = asyncHandler(async(req,res)=>{
 module.exports ={
     addDetail,
     getDetail,
-    deletedetails
+    deleteDetail,
+    updateDetail
 }

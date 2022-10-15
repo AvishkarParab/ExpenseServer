@@ -3,7 +3,8 @@ const router = express.Router();
 const {
     addDetail,
     getDetail,
-    deletedetails
+    deleteDetail,
+    updateDetail
 
 } = require("../controllers/detailController");
 const {protect} = require("../middleware/authMiddleware");
@@ -16,8 +17,11 @@ router.post("/add",addDetail);
 router.get("/get/:id",getDetail);
 
 
-//GET Detail
-router.delete("/delete/:id",deletedetails);
+//DELETE Detail
+router.delete("/delete",deleteDetail);
+
+//UPDATE Detail
+router.put("/update",updateDetail);
 
 
 
