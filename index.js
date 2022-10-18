@@ -17,8 +17,9 @@ app.use(bodyParser.json());
 app.use(cookieParser())
 
 app.use("/",Routes);
-app.get("/useme",(req,res)=>{res.send("USEEEEE MEEE")});
-
+app.get("/", (req, res) => {
+    res.send(`app working ` + new Date().toLocaleTimeString());
+});
 
 app.use(errorHandler);
 
