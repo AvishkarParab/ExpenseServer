@@ -8,6 +8,7 @@ var Routes = require("./routes/auth.js");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const {errorHandler} = require("./middleware/errorHandler");
+const router = require("./routes/users");
 
 connectDB();//db connect
 
@@ -17,6 +18,7 @@ app.use(cookieParser())
 
 app.use("/",Routes);
 app.get("/useme",(req,res)=>{res.send("USEEEEE MEEE")});
+
 
 app.use(errorHandler);
 

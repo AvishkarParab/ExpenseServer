@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 
 const loginUser = asyncHandler(async (req,res) =>{
     const {email, password} = req.body;
-
+    console.log('heyy')
     const user = await User.findOne({email})
     if(user && (await bcrypt.compare(password,user.password))){
         res.cookie("EXPTOKEN",generateToken(user.id));
