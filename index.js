@@ -4,11 +4,11 @@ var app = express();
 var dotenv = require("dotenv").config();
 const connectDB = require("./config/db")
 var port = process.env.PORT || 5000;
-var Routes = require("./routes/auth.js");
+var Routes = require("./routes");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const {errorHandler} = require("./middleware/errorHandler");
-const router = require("./routes/users");
+// const router = require("./routes/users");
 
 connectDB();//db connect
 
