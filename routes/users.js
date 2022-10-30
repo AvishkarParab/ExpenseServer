@@ -18,10 +18,10 @@ router.post("/login",loginUser);
 router.post("/register",registerUser);
 
 //GET Single User
-router.get("/getMe",protect,getMe);
+router.get("/getMe",getMe);
 
 //LOG OUT the user
-router.get("/logout",protect,logout);
+router.get("/logout",logout);
 
 
 module.exports = router;

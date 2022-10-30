@@ -8,15 +8,15 @@ const e = require("express");
 
 
 const addRecord = asyncHandler(async (req,res) =>{
-    const {year,month} = req.body;
+    const {userid,year,month} = req.body;
 
-    if(!year || !month){
+    if(!userid || !year || !month){
         res.status(400)
         throw new Error("Incomplete Data, Please add month and year");
     }
 
     //If Record Exist then return ID
-    const recordExist = await Record.findOne({year,month,uid:req.user.id});
+    const recordExist = await Record.findOne({year,month,uid:userid});
     if(recordExist){
         res.status(200).json({
             id:recordExist.id
@@ -24,7 +24,7 @@ const addRecord = asyncHandler(async (req,res) =>{
     }else{
     //create Record
     let record = await Record.create({
-        uid:req.user.id,
+        uid:userid,
         year,
         month
     });
@@ -42,13 +42,15 @@ const addRecord = asyncHandler(async (req,res) =>{
 })
 
 const getRecord = asyncHandler(async(req,res)=>{
-    const {year,month} = req.query;
+    const {year,month,userid} = req.query;
+
 
     if(!year || !month){
         res.status(400)
         throw new Error("Please Select Year and Month");
     }
-    const record = await Record.findOne({year,month,uid:req.user.id});
+
+    const record = await Record.findOne({year,month,uid:userid});
     if(record){
         const response = await Detail.find({recId:record._id})
         res.status(200).json(response);
@@ -62,7 +64,7 @@ const getRecord = asyncHandler(async(req,res)=>{
 
 const monthlyRate = asyncHandler(async(req,res)=>{
     
-    const record = await Record.find({uid:req.user.id});
+    const record = await Record.find({uid:req.query.userid});
     var storeid=[];
     var storeyear =[];
     var totalExpense=0,totalProfit=0;

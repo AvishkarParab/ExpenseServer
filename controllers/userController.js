@@ -7,15 +7,12 @@ const jwt = require("jsonwebtoken");
 
 const loginUser = asyncHandler(async (req,res) =>{
     const {email, password} = req.body;
-    console.log('heyy')
     const user = await User.findOne({email})
     if(user && (await bcrypt.compare(password,user.password))){
-        res.cookie("EXPTOKEN",generateToken(user.id));
         res.status(201).json({
             _id:user.id,
             name:user.name,
             email:user.email,
-            token: generateToken(user.id)
         })
     }else{
         res.status(400)
@@ -73,7 +70,7 @@ const generateToken =(id)=>{
 }
 
 const getMe = asyncHandler(async (req,res) =>{
-    const {_id,name,email,gender} = await User.findById(req.user.id)
+    const {_id,name,email,gender} = await User.findById(req.query.userid)
 
     res.status(200).json({
         id:_id,
@@ -86,7 +83,6 @@ const getMe = asyncHandler(async (req,res) =>{
 
 const logout = asyncHandler(async (req,res) =>{
     return res
-      .clearCookie("EXPTOKEN")
       .status(200)
       .json({ message: "Successfully logged out" });
     })
